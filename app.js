@@ -1,6 +1,7 @@
 var Discord = require("discord.js");
 const bot = new Discord.Client();
-const token = "MzAyMTUyMTcwNzcyNDk2Mzg0.C9FblA.SxWK4_PpMVRw-Ph0BGVTOlMWvgs";
+const config = require("./config.json");
+const token = config.token;
 const osuApiKey = "8c4aa32bda3e546b2ccc3851b2ff4ed64e27369e";
 const osu = require("osu")(osuApiKey);
 var guild = undefined;

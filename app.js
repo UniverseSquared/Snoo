@@ -49,7 +49,7 @@ bot.on("message", message => {
 			} else if(amount >= 100) {
 				message.reply("you can't do over 100 message! Discord might take me down if you do, they'll think I'm deleting all the message for no reason! ;(");
 			} else {
-				message.channel.fetchmessage({limit:amount}).then(message => message.channel.bulkDelete(message)).catch(console.error);
+				message.channel.fetchMessages({limit:amount}).then(messages => message.channel.bulkDelete(messages)).catch(console.error);
 			}
 		} else {
 			message.reply("you don't have permission to do that!");
@@ -84,8 +84,9 @@ bot.on("message", message => {
 				message.reply("you can't kick or ban a bot admin!")
 			} else {
 				message.guild.member(message.mentions.users.first()).kick();
+				if(message.mentions.users.first().username === "[Testing User]") return;
 				let channel = message.guild.channels.find("name", "mod-log");
-				channel.sendMessage("", {embed:{color:0x6666ff, title:"User kicked", description:"User " + message.mentions.users.first().username + "#" + message.mentions.users.first().discriminator + " kicked by " + message.author.username + "#" + message.author.discriminator + "."}});
+				channel.sendMessage("", {embed:{color:0x6666ff, title:"User kicked", description:"User " + message.mentions.users.first().username + "#" + message.mentions.users.first().discriminator + " was kicked by " + message.author.username + "#" + message.author.discriminator + "."}});
 			}
 		}
 
@@ -97,8 +98,9 @@ bot.on("message", message => {
 				message.reply("you can't kick or ban a bot admin!")
 			} else {
 				message.guild.member(message.mentions.users.first()).ban();
+				if(message.mentions.users.first().username === "[Testing User]") return;
 				let channel = member.guild.channels.find("name", "mod-log");
-				channel.sendMessage("", {embed:{color:0x6666ff, title:"User banned", description:"User " + message.mentions.users.first().username + "#" + message.mentions.users.first().discriminator + " banned by " + message.author.username + "#" + message.author.discriminator + "."}});
+				channel.sendMessage("", {embed:{color:0x6666ff, title:"User banned", description:"User " + message.mentions.users.first().username + "#" + message.mentions.users.first().discriminator + " was banned by " + message.author.username + "#" + message.author.discriminator + "."}});
 			}
 		}
 	} else if(message.content.startsWith(prefix + "help")) {
@@ -255,6 +257,24 @@ bot.on("message", message => {
 			} else {
 				member.addRole(message.guild.roles.find("name", "Strike 1"));
 				message.channel.sendMessage(member.toString() + " received a first strike.");
+			}
+		} else {
+			message.reply("you don't have permission to do that!");
+		}
+	} else if(message.content.startsWith(prefix + "mute")) {
+		if(isAdmin(message.guild.member(message.author))) {
+			let member = message.guild.member(message.mentions.users.first());
+			let muteRole = message.guild.roles.find("name", "Muted");
+			let isMuted = member.roles.find("name", "Muted");
+			let channel = member.guild.channels.find("name", "mod-log");
+			if(isMuted) {
+				member.removeRole(muteRole);
+				message.channel.sendMessage(member.toString() + " was unmuted.");
+				channel.sendMessage("", {embed:{color:0x6666ff, title:"User unmuted", description:"User " + message.mentions.users.first().username + "#" + message.mentions.users.first().discriminator + " was unmuted by " + message.author.username + "#" + message.author.discriminator + "."}});
+			} else {
+				member.addRole(muteRole);
+				message.channel.sendMessage(member.toString() + " was muted.");
+				channel.sendMessage("", {embed:{color:0x6666ff, title:"User muted", description:"User " + message.mentions.users.first().username + "#" + message.mentions.users.first().discriminator + " was muted by " + message.author.username + "#" + message.author.discriminator + "."}});
 			}
 		} else {
 			message.reply("you don't have permission to do that!");

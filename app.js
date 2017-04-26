@@ -20,6 +20,11 @@ bot.on("ready", () => {
 	console.log("Bot ready!");
 });
 
+bot.on("channelCreate", (c) => {
+	//let member = guild.member(channel.client.user);
+	console.log("Channel '" + c.name + "' was created (" + Date.now() + ")");
+});
+
 bot.on("guildMemberAdd", (member) => {
 	if(!(member.displayName === "[Testing User]")) {
 		let channel = member.guild.channels.find("name", "general_chat");
